@@ -41,16 +41,25 @@ load();
 function save(){
   // 準備好要裝各個項目的空陣列
   var arr = [];
+  var arr_done = [];
+
 
   // 對於每個 li，
   // 把 <span> 裡的項目（一個物件：{text:文字, isDone:是否被完成}）放進陣列裡
   mainUl.find('li').each(function(){
+    var li_done = $('li.is-done');
+
     // TODO: 修改此處，把「已完成」與否一併存入。
-    arr.push($(this).find('span').text());
+    arr.push($(this).find('span').not('.is-done').text());
+    //arr_done.push(li_done.find('span').text());
+    arr_done.push(li_done.find('span').not(':empty').text());
+    console.log("arr", arr);
+    console.log("arr_done",arr_done);
   });
 
   // 把陣列轉成 JSON 字串後存進 localStorage
   localStorage.todoItems = JSON.stringify(arr);
+  localStorage.doneItems = JSON.stringify(arr_done);
 }
 
 // 從 localStorage 讀出整個表，放進 <ul>
@@ -95,9 +104,9 @@ deleteUl.on('sortreceive', function(e, ui){
 
 // [TODO] 回家作業
 // 完成項目
+
 doneUl.on('sortreceive', function(e, ui){
-  ui.item.addClass('is-done');
-}).on('sortstop',function(){
+  ui.item.addClass('is-done').appendTo(mainUl);
   save();
 });
 
